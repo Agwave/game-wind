@@ -1,0 +1,56 @@
+# golangci-lint 配置（v2 格式）
+version: "2"
+
+run:
+  timeout: 2m
+
+linters:
+  default: standard # errcheck + govet + ineffassign + staticcheck + unused
+  enable:
+    - bodyclose     # HTTP 响应体未关闭
+    - noctx         # 缺少 context 的 HTTP 请求
+    - misspell      # 拼写错误（含中文注释里的英文词）
+    - gocritic      # 代码风格与正确性检查
+    - revive        # golint 继任者（导出注释、命名等）
+    - unconvert     # 无必要类型转换
+    - wastedassign  # 赋值从未被使用
+    - nilerr        # 错误处理不当（nil 错误被返回）
+    - usestdlibvars # 应使用标准库常量（如 http.MethodGet）
+    - errcheck      # 未检查的错误（显式开启，避免默认配置遗漏）
+  settings:
+    gocritic:
+      enabled-checks:
+        - boolExprSimplify
+        - commentedOutCode
+        - emptyFallthrough
+        - equalFold
+        - evalOrder
+        - hugeParam
+        - importShadow
+        - indexAlloc
+        - nestingReduce
+        - paramTypeCombine
+        - rangeExprCopy
+        - sloppyReassign
+        - stringXbytes
+        - truncateCmp
+        - typeUnparen
+        - unnamedResult
+        - unnecessaryBlock
+        - yodaStyleExpr
+    revive:
+      rules:
+        - name: exported
+          severity: warning
+    errcheck:
+      exclude-functions:
+        - (*os.File).Close
+        - (io.Closer).Close
+
+formatters:
+  enable:
+    - gofmt       # 格式
+    - goimports   # import 分组排序
+
+issues:
+  max-issues-per-linter: 0 # 不限数量，全量输出

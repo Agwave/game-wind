@@ -1,0 +1,11 @@
+# 二进制
+/bin/
+*.exe
+
+# 本地配置（含企业微信 webhook 密钥，不入库）
+config.local.yaml
+
+# 运行数据（快照、报告、状态、日志）
+/data/*.json
+/data/reports/
+/logs/

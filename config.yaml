@@ -1,0 +1,44 @@
+# game-wind 配置模板。
+# 复制为 config.local.yaml 填写本地敏感配置（webhook），本文件保留默认值入库。
+
+# 榜单抓取条数（苹果 RSS 上限 100）
+limit: 100
+
+# 各地区「重大变化」阈值
+#   grossing_new_top: 畅销榜新进前 N 名才报
+#   grossing_rise:    畅销榜排名上升 >= N 名才报
+#   grossing_top_band: 畅销榜前 N 名内的任何变动都报
+#   free_new_top:     免费榜新进前 N 名才报
+#   free_rise:        免费榜排名上升 >= N 名才报
+regions:
+  cn:
+    grossing_new_top: 50
+    grossing_rise: 30
+    grossing_top_band: 10
+    free_new_top: 20
+    free_rise: 30
+  us:
+    grossing_new_top: 50
+    grossing_rise: 30
+    grossing_top_band: 10
+    free_new_top: 20
+    free_rise: 30
+  jp:
+    grossing_new_top: 50
+    grossing_rise: 30
+    grossing_top_band: 10
+    free_new_top: 20
+    free_rise: 30
+  kr:
+    grossing_new_top: 50
+    grossing_rise: 30
+    grossing_top_band: 10
+    free_new_top: 20
+    free_rise: 30
+
+# 通知
+notify:
+  # 企业微信机器人 webhook URL（敏感信息放 config.local.yaml 的 notify.webhook_url）
+  webhook_url: ""
+  # 当日无重大变化时是否仍推送一条简报（false = 不推送，只落盘报告）
+  notify_when_quiet: false

@@ -1,0 +1,275 @@
+# 游戏→上市公司映射表（只收录 A 股 / 港股上市公司）
+#
+# 匹配规则（按优先级）：
+#   1. ids       —— App Store app_id 精确匹配（同一游戏跨地区是同一 id，或同游戏多地区不同 id 都列出）
+#   2. names     —— 与榜单标题完全相等
+#   3. contains  —— 标题包含该子串（用于苹果标题带版本后缀等不确定的情况）
+#
+# 维护建议：报告中的「未映射新进游戏」清单会给出 app_id，把 id 加进对应游戏即可，
+# 匹配会自动生效（id 匹配跨地区稳定，不受本地化标题影响）。
+#
+# ids/names 均来自 2026-08-18 真实榜单抓取；未上过榜的游戏为 name-only 条目，等它们上榜时生效。
+companies:
+  # ================= 腾讯控股 0700.HK =================
+  - company: 腾讯控股
+    code: "0700.HK"
+    market: 港股
+    games:
+      - ids: [989673964]
+        names: [王者荣耀]
+      - ids: [1321803705]
+        names: [和平精英]
+      - ids: [1642894547]
+        names: [三角洲行动]
+      - ids: [6535673811]
+        names: [无畏契约：源能行动]
+      - ids: [1455054000, 1480616990]
+        names: ["英雄联盟手游", "리그 오브 레전드: 와일드 리프트"]
+      - ids: [1042545880]
+        names: [穿越火线-枪战王者]
+      - ids: [955396648]
+        names: [火影忍者]
+      - ids: [1478101301]
+        names: [金铲铲之战]
+      - ids: [446324234]
+        names: [腾讯欢乐斗地主]
+      - ids: [1439754823]
+        names: [光与夜之恋]
+      - ids: [1305599559]
+        names: [FC足球世界]
+      - ids: [6478654994]
+        names: [洛克王国：世界]
+      - ids: [1529851592]
+        names: [地下城与勇士：起源]
+      - ids: [483330461]
+        names: [英雄杀]
+      - ids: [1505445106]
+        names: [暗区突围]
+      - ids: [1235504705]
+        names: [QQ飞车]
+      - ids: [1595603316]
+        names: [部落冲突（Clash of Clans）]
+        contains: [部落冲突]
+      - ids: [1585915174]
+        names: ["勝利の女神：NIKKE", "승리의 여신: 니케"]
+        note: 腾讯 Level Infinite 发行，开发商 Shift Up（韩）
+      - names: [元梦之星]
+      - names: [欢乐麻将]
+        contains: [欢乐麻将]
+      - names: [QQ炫舞]
+        contains: [QQ炫舞]
+      - names: [Honor of Kings]
+        contains: [Honor of Kings]
+      - names: [三角洲行动国际版]
+        contains: [Delta Force]
+
+  # ================= 网易 9999.HK =================
+  - company: 网易
+    code: "9999.HK"
+    market: 港股
+    games:
+      - ids: [940547441]
+        names: [梦幻西游]
+      - ids: [1544884479]
+        names: [蛋仔派对]
+      - ids: [1330863325]
+        names: [第五人格]
+      - ids: [909211092]
+        names: [率土之滨]
+      - ids: [1347776121]
+        names: [实况足球]
+      - ids: [1033387365]
+        names: [倩女幽魂]
+      - ids: [1243986797]
+        names: [我的世界：移动版]
+        contains: [我的世界]
+      - ids: [6475668638]
+        names: [燕云十六声]
+      - ids: [1312031248]
+        names: [荒野行動-スマホ版バトロワ, 荒野行动]
+        contains: [荒野行动, 荒野行動]
+      - names: [永劫无间]
+        contains: [Naraka]
+      - names: [逆水寒]
+      - names: [巅峰极速]
+        contains: [Racing Master]
+      - names: [阴阳师]
+        contains: [阴阳师]
+      - names: [光·遇]
+        contains: [光·遇]
+      - names: [大话西游]
+        contains: [大话西游]
+
+  # ================= 世纪华通 002602.SZ =================
+  - company: 世纪华通
+    code: "002602.SZ"
+    market: A股
+    games:
+      - ids: [6478492012, 6443575749]
+        names: [无尽冬日, Whiteout Survival, ホワイトアウト・サバイバル, "WOS: 화이트아웃 서바이벌"]
+        note: 出海爆款，美日韩畅销榜常年前列
+      - ids: [6739554056]
+        names: [Kingshot, 킹샷, キングショット]
+        note: 世纪华通（点点互动）海外新游
+      - ids: [6471045672]
+        names: ["Tasty Travels: Merge Game", "グルメ・ジャーニー", "테이스티 트레블: 합성 게임"]
+      - names: [热血传奇]
+
+  # ================= 三七互娱 002555.SZ =================
+  - company: 三七互娱
+    code: "002555.SZ"
+    market: A股
+    games:
+      - ids: [1517980891]
+        names: [パズル&サバイバル]
+        contains: [Puzzles & Survival]
+      - names: [寻道大千]
+      - names: [灵魂序章]
+      - names: [斗罗大陆：魂师对决]
+
+  # ================= 恺英网络 002517.SZ =================
+  - company: 恺英网络
+    code: "002517.SZ"
+    market: A股
+    games:
+      - names: [原始传奇]
+      - names: [仙剑奇侠传：新的开始]
+      - names: [王者传奇]
+
+  # ================= 神州泰岳 300002.SZ =================
+  - company: 神州泰岳
+    code: "300002.SZ"
+    market: A股
+    games:
+      - names: [旭日之城]
+        contains: [Age of Origins]
+        note: 出海 SLG
+
+  # ================= 完美世界 002624.SZ =================
+  - company: 完美世界
+    code: "002624.SZ"
+    market: A股
+    games:
+      - names: [幻塔]
+        contains: [Tower of Fantasy]
+      - names: [梦幻新诛仙]
+      - names: [诛仙]
+      - names: [新笑傲江湖]
+      - names: [异环]
+        note: 完美世界开放世界新游（2025-2026 中国区畅销榜前列）
+
+  # ================= 吉比特 603444.SH =================
+  - company: 吉比特
+    code: "603444.SH"
+    market: A股
+    games:
+      - names: [问道]
+      - names: [一念逍遥]
+
+  # ================= 巨人网络 002558.SZ =================
+  - company: 巨人网络
+    code: "002558.SZ"
+    market: A股
+    games:
+      - ids: [6544797261]
+        names: [超自然行动组-鬼吹灯联动]
+        contains: [超自然行动组]
+      - names: [原始征途]
+
+  # ================= 电魂网络 603258.SH =================
+  - company: 电魂网络
+    code: "603258.SH"
+    market: A股
+    games:
+      - names: [梦三国]
+
+  # ================= 星辉娱乐 300043.SZ =================
+  - company: 星辉娱乐
+    code: "300043.SZ"
+    market: A股
+    games:
+      - ids: [6754679035]
+        names: [히어로 랜드M]
+        contains: [Hero Land M]
+        note: Orienjoy 出海，归属待确认
+
+  # ================= 心动公司 2400.HK =================
+  - company: 心动公司
+    code: "2400.HK"
+    market: 港股
+    games:
+      - ids: [6746151928]
+        names: [두근두근타운, 心动小镇]
+      - names: [出发吧麦芬]
+      - names: [铃兰之剑]
+
+  # ================= 哔哩哔哩 9626.HK =================
+  - company: 哔哩哔哩
+    code: "9626.HK"
+    market: 港股
+    games:
+      - ids: [6757360957]
+        names: ["삼국지: 천하결전"]
+        note: 三国志：天下决战（韩国区）
+      - names: [三国：谋定天下]
+      - names: [碧蓝航线]
+
+  # ================= 创梦天地 1119.HK =================
+  - company: 创梦天地
+    code: "1119.HK"
+    market: 港股
+    games:
+      - ids: [995122577]
+        names: [地铁跑酷 - 开罗奇旅启程]
+        contains: [地铁跑酷]
+
+  # ================= 中手游 0302.HK =================
+  - company: 中手游
+    code: "0302.HK"
+    market: 港股
+    games:
+      - names: [斗罗大陆：史莱克学院]
+      - names: [仙剑奇侠传]
+
+  # ================= 友谊时光 6820.HK =================
+  - company: 友谊时光
+    code: "6820.HK"
+    market: 港股
+    games:
+      - names: [浮生为卿歌]
+      - names: [凌云诺]
+
+  # ================= 金山软件 3888.HK（西山居）=================
+  - company: 金山软件
+    code: "3888.HK"
+    market: 港股
+    games:
+      - names: [剑网3无界]
+        contains: [剑网3]
+      - names: [新剑侠情缘]
+        contains: [新剑侠情缘]
+        note: 西山居剑侠系列
+      - names: [尘白禁区]
+        contains: [Snowbreak]
+
+  # ================= 网龙 0777.HK =================
+  - company: 网龙
+    code: "0777.HK"
+    market: 港股
+    games:
+      - names: [魔域]
+
+  # ================= 禅游科技 2660.HK =================
+  - company: 禅游科技
+    code: "2660.HK"
+    market: 港股
+    games:
+      - ids: [891616303]
+        names: [指尖四川麻将]
+
+  # ================= 青瓷游戏 6633.HK =================
+  - company: 青瓷游戏
+    code: "6633.HK"
+    market: 港股
+    games:
+      - names: [最强蜗牛]
