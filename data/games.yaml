@@ -301,4 +301,7 @@ companies:
         note: 西山居剑侠系列
       - names: [尘白禁区]
         contains: [Snowbreak]
+      - ids: [6740756173]
+        names: [鹅鸭杀]
+        note: 西山居发行国服（Artist 为成都金山世游卓立科技）
 
