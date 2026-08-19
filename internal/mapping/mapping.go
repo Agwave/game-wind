@@ -35,14 +35,17 @@ type Matched struct {
 }
 
 type tableFile struct {
-	Companies []Company `yaml:"companies"`
+	Companies        []Company `yaml:"companies"`
+	UnrelatedArtists []string  `yaml:"unrelated_artists"`
 }
 
 // Table 映射表，按优先级索引：app_id → 公司，名称（精确/包含）→ 公司。
 type Table struct {
-	byID       map[string]*Matched
-	byName     map[string]*Matched
-	byContains []containsEntry
+	byID             map[string]*Matched
+	byName           map[string]*Matched
+	byContains       []containsEntry
+	Companies        []Company
+	UnrelatedArtists []string
 }
 
 type containsEntry struct {
@@ -61,8 +64,10 @@ func Load(path string) (*Table, error) {
 		return nil, fmt.Errorf("解析映射表 %s: %w", path, err)
 	}
 	t := &Table{
-		byID:   make(map[string]*Matched),
-		byName: make(map[string]*Matched),
+		byID:             make(map[string]*Matched),
+		byName:           make(map[string]*Matched),
+		Companies:        tf.Companies,
+		UnrelatedArtists: normalizeArtists(tf.UnrelatedArtists),
 	}
 	for _, c := range tf.Companies {
 		if c.Company == "" {
@@ -90,6 +95,32 @@ func Load(path string) (*Table, error) {
 		}
 	}
 	return t, nil
+}
+
+// normalizeArtists 小写、去首尾空格、去掉空串。
+func normalizeArtists(ss []string) []string {
+	var out []string
+	for _, s := range ss {
+		s = strings.ToLower(strings.TrimSpace(s))
+		if s != "" {
+			out = append(out, s)
+		}
+	}
+	return out
+}
+
+// IsUnrelated 判断开发者账号名（Artist）是否命中无关发行商名单（小写子串匹配，大小写不敏感）。
+func (t *Table) IsUnrelated(artist string) bool {
+	if t == nil || artist == "" {
+		return false
+	}
+	artist = strings.ToLower(artist)
+	for _, a := range t.UnrelatedArtists {
+		if a != "" && strings.Contains(artist, a) {
+			return true
+		}
+	}
+	return false
 }
 
 // Match 按 app_id → 精确名 → 包含名 的顺序匹配一条榜单记录。

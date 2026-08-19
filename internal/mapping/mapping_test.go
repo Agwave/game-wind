@@ -90,3 +90,42 @@ func TestLoadErrors(t *testing.T) {
 		t.Error("缺 company 的条目应报错")
 	}
 }
+
+// TestUnrelatedArtists 无关发行商名单：加载、小写子串匹配、空 artist、不误伤目标公司。
+func TestUnrelatedArtists(t *testing.T) {
+	yamlContent := `
+unrelated_artists:
+  - Nintendo
+  - miHoYo
+  - King
+companies:
+  - company: 腾讯控股
+    code: "0700.HK"
+    market: 港股
+    games:
+      - names: [王者荣耀]
+`
+	p := filepath.Join(t.TempDir(), "games.yaml")
+	if err := os.WriteFile(p, []byte(yamlContent), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	tab, err := Load(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(tab.Companies) != 1 || tab.Companies[0].Company != "腾讯控股" {
+		t.Errorf("Companies 应保留 yaml 顺序: %+v", tab.Companies)
+	}
+	if !tab.IsUnrelated("Nintendo Co., Ltd.") {
+		t.Error("小写子串应命中 Nintendo Co., Ltd.")
+	}
+	if !tab.IsUnrelated("miHoYo Limited") {
+		t.Error("应命中 miHoYo Limited")
+	}
+	if tab.IsUnrelated("") {
+		t.Error("空 artist 不应命中")
+	}
+	if tab.IsUnrelated("Century Games Pte. Ltd.") {
+		t.Error("Century（目标公司出海品牌）不应命中")
+	}
+}
