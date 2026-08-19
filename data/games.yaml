@@ -1,9 +1,12 @@
-# 游戏→上市公司映射表（只收录 A 股 / 港股上市公司）
+# 游戏→上市公司映射表（只收录 A 股上市公司 + 港股通标的港股）
 #
 # 匹配规则（按优先级）：
 #   1. ids       —— App Store app_id 精确匹配（同一游戏跨地区是同一 id，或同游戏多地区不同 id 都列出）
 #   2. names     —— 与榜单标题完全相等
 #   3. contains  —— 标题包含该子串（用于苹果标题带版本后缀等不确定的情况）
+#
+# core: true 标记该游戏为公司核心业绩支撑游戏（财报/畅销榜佐证的收入主力），
+# 供报告对核心游戏变动优先关注；新加入的核心游戏以 name-only 条目入库，等它们上榜时生效。
 #
 # 维护建议：报告中的「未映射新进游戏」清单会给出 app_id，把 id 加进对应游戏即可，
 # 匹配会自动生效（id 匹配跨地区稳定，不受本地化标题影响）。
@@ -17,10 +20,14 @@ companies:
     games:
       - ids: [989673964]
         names: [王者荣耀]
+        core: true
       - ids: [1321803705]
         names: [和平精英]
+        core: true
       - ids: [1642894547]
         names: [三角洲行动]
+        core: true
+        note: 2026Q1 腾讯「长青游戏」之一（手游季均 DAU 500万+，年流水 40亿+）
       - ids: [6535673811]
         names: [无畏契约：源能行动]
       - ids: [1455054000, 1480616990]
@@ -31,6 +38,7 @@ companies:
         names: [火影忍者]
       - ids: [1478101301]
         names: [金铲铲之战]
+        core: true
       - ids: [446324234]
         names: [腾讯欢乐斗地主]
       - ids: [1439754823]
@@ -70,8 +78,12 @@ companies:
     games:
       - ids: [940547441]
         names: [梦幻西游]
+        core: true
+        note: 压舱石：电脑版 2025Q3 最高同时在线 358 万，环比增长主源
       - ids: [1544884479]
         names: [蛋仔派对]
+        core: true
+        note: 2025Q3 在线游戏收入同比增收主力
       - ids: [1330863325]
         names: [第五人格]
       - ids: [909211092]
@@ -91,6 +103,8 @@ companies:
       - names: [永劫无间]
         contains: [Naraka]
       - names: [逆水寒]
+        core: true
+        note: 手游为 2025 在线游戏收入环比增长主要来源，11 月全球发行
       - names: [巅峰极速]
         contains: [Racing Master]
       - names: [阴阳师]
@@ -107,10 +121,12 @@ companies:
     games:
       - ids: [6478492012, 6443575749]
         names: [无尽冬日, Whiteout Survival, ホワイトアウト・サバイバル, "WOS: 화이트아웃 서바이벌"]
-        note: 出海爆款，美日韩畅销榜常年前列
+        note: 出海爆款，美日韩畅销榜常年前列；2025 中国手游出海榜第一
+        core: true
       - ids: [6739554056]
         names: [Kingshot, 킹샷, キングショット]
-        note: 世纪华通（点点互动）海外新游
+        note: 世纪华通（点点互动）海外新游，2025 中国手游出海榜第三
+        core: true
       - ids: [6471045672]
         names: ["Tasty Travels: Merge Game", "グルメ・ジャーニー", "테이스티 트레블: 합성 게임"]
       - names: [热血传奇]
@@ -124,8 +140,12 @@ companies:
         names: [パズル&サバイバル]
         contains: [Puzzles & Survival]
       - names: [寻道大千]
+        core: true
+        note: 老产品焕新亮点，2025 长线运营稳住基本盘
       - names: [灵魂序章]
+        core: true
       - names: [斗罗大陆：魂师对决]
+        core: true
 
   # ================= 恺英网络 002517.SZ =================
   - company: 恺英网络
@@ -133,8 +153,13 @@ companies:
     market: A股
     games:
       - names: [原始传奇]
+        core: true
       - names: [仙剑奇侠传：新的开始]
       - names: [王者传奇]
+        core: true
+      - names: [烈焰觉醒]
+        core: true
+        note: 2025-09 公测，「传奇+X」三端互通，2026Q1 营收增长核心驱动
 
   # ================= 神州泰岳 300002.SZ =================
   - company: 神州泰岳
@@ -143,7 +168,12 @@ companies:
     games:
       - names: [旭日之城]
         contains: [Age of Origins]
-        note: 出海 SLG
+        note: 出海 SLG；2025 收入 28.9 亿，占游戏业务约 74%
+        core: true
+      - names: [战火与秩序]
+        contains: [War and Order]
+        note: 与旭日之城两款 SLG 合计占游戏收入约 97%
+        core: true
 
   # ================= 完美世界 002624.SZ =================
   - company: 完美世界
@@ -156,7 +186,8 @@ companies:
       - names: [诛仙]
       - names: [新笑傲江湖]
       - names: [异环]
-        note: 完美世界开放世界新游（2025-2026 中国区畅销榜前列）
+        note: 2026-04 全球公测，5 月贡献公司全球收入约 87%，业绩支柱
+        core: true
 
   # ================= 吉比特 603444.SH =================
   - company: 吉比特
@@ -164,7 +195,15 @@ companies:
     market: A股
     games:
       - names: [问道]
+        core: true
+        note: 问道手游 2025 流水 19.4 亿，公司第一大产品
       - names: [一念逍遥]
+      - names: [杖剑传说]
+        core: true
+        note: 2025-05 上线，大陆版全年流水 17 亿，增长主引擎
+      - names: [问剑长生]
+        core: true
+        note: 2025-01 上线，大陆版流水 8.2 亿
 
   # ================= 巨人网络 002558.SZ =================
   - company: 巨人网络
@@ -174,7 +213,10 @@ companies:
       - ids: [6544797261]
         names: [超自然行动组-鬼吹灯联动]
         contains: [超自然行动组]
+        core: true
+        note: 2025 增长主引擎，累计流水破 50 亿
       - names: [原始征途]
+        core: true
 
   # ================= 电魂网络 603258.SH =================
   - company: 电魂网络
@@ -182,6 +224,8 @@ companies:
     market: A股
     games:
       - names: [梦三国]
+        core: true
+        note: 占营收 60%+，单一产品依赖
 
   # ================= 星辉娱乐 300043.SZ =================
   - company: 星辉娱乐
@@ -191,7 +235,7 @@ companies:
       - ids: [6754679035]
         names: [히어로 랜드M]
         contains: [Hero Land M]
-        note: Orienjoy 出海，归属待确认
+        note: Orienjoy 出海，归属待确认；2025 公司核心出海产品为《冒险岛R：进化》《仙境传说：破晓》等
 
   # ================= 心动公司 2400.HK =================
   - company: 心动公司
@@ -200,7 +244,10 @@ companies:
     games:
       - ids: [6746151928]
         names: [두근두근타운, 心动小镇]
+        core: true
       - names: [出发吧麦芬]
+        core: true
+        note: 2025 收入贡献前五，进入成熟期流水回落
       - names: [铃兰之剑]
 
   # ================= 哔哩哔哩 9626.HK =================
@@ -211,33 +258,13 @@ companies:
       - ids: [6757360957]
         names: ["삼국지: 천하결전"]
         note: 三国志：天下决战（韩国区）
+        core: true
       - names: [三国：谋定天下]
+        core: true
+        note: 游戏业务绝对核心，2025 助力 B 站首次全年盈利
       - names: [碧蓝航线]
-
-  # ================= 创梦天地 1119.HK =================
-  - company: 创梦天地
-    code: "1119.HK"
-    market: 港股
-    games:
-      - ids: [995122577]
-        names: [地铁跑酷 - 开罗奇旅启程]
-        contains: [地铁跑酷]
-
-  # ================= 中手游 0302.HK =================
-  - company: 中手游
-    code: "0302.HK"
-    market: 港股
-    games:
-      - names: [斗罗大陆：史莱克学院]
-      - names: [仙剑奇侠传]
-
-  # ================= 友谊时光 6820.HK =================
-  - company: 友谊时光
-    code: "6820.HK"
-    market: 港股
-    games:
-      - names: [浮生为卿歌]
-      - names: [凌云诺]
+        core: true
+        note: 长线产品，与三谋等构成约七成游戏收入
 
   # ================= 金山软件 3888.HK（西山居）=================
   - company: 金山软件
@@ -246,30 +273,11 @@ companies:
     games:
       - names: [剑网3无界]
         contains: [剑网3]
+        core: true
+        note: 剑侠系列为西山居业务底盘
       - names: [新剑侠情缘]
         contains: [新剑侠情缘]
         note: 西山居剑侠系列
       - names: [尘白禁区]
         contains: [Snowbreak]
 
-  # ================= 网龙 0777.HK =================
-  - company: 网龙
-    code: "0777.HK"
-    market: 港股
-    games:
-      - names: [魔域]
-
-  # ================= 禅游科技 2660.HK =================
-  - company: 禅游科技
-    code: "2660.HK"
-    market: 港股
-    games:
-      - ids: [891616303]
-        names: [指尖四川麻将]
-
-  # ================= 青瓷游戏 6633.HK =================
-  - company: 青瓷游戏
-    code: "6633.HK"
-    market: 港股
-    games:
-      - names: [最强蜗牛]
