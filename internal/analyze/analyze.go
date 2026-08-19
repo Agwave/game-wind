@@ -40,7 +40,7 @@ type Change struct {
 // Result 一个地区的分析结果。
 type Result struct {
 	Changes  []Change
-	Unmapped []string // 新进但未映射到上市公司的游戏：如 "第8 游戏名 (app_id)"
+	Unmapped []Change // 未映射到目标公司的重大变化（Company 为空），供报告「补充·待确认」使用
 }
 
 // Analyze 对比 prev 与 cur 两个快照，产出地区 cc 的重大变化。
@@ -77,18 +77,15 @@ func diffChart(prev *store.Snapshot, prevEntries, curEntries []fetch.Entry, cc, 
 		if !ok {
 			if e.Rank <= newTop {
 				ch := makeChange(e, cc, chart, KindNew, 0, e.Rank, tab)
+				addChange(res, &ch)
 				reported[e.AppID] = true
-				if ch.Company == "" {
-					res.Unmapped = append(res.Unmapped, fmt.Sprintf("第%d %s (id:%s)", e.Rank, e.Name, e.AppID))
-				} else {
-					res.Changes = append(res.Changes, ch)
-				}
 			}
 			continue
 		}
 		if rise > 0 && pr-e.Rank >= rise {
+			ch := makeChange(e, cc, chart, KindRise, pr, e.Rank, tab)
+			addChange(res, &ch)
 			reported[e.AppID] = true
-			res.Changes = append(res.Changes, makeChange(e, cc, chart, KindRise, pr, e.Rank, tab))
 		}
 	}
 	// 第二遍：TopN 内变动（含跌出 TopN / 新进 TopN）
@@ -106,7 +103,8 @@ func diffChart(prev *store.Snapshot, prevEntries, curEntries []fetch.Entry, cc, 
 			// 找出该 app 的当前条目
 			for _, e := range curEntries {
 				if e.AppID == appID {
-					res.Changes = append(res.Changes, makeChange(e, cc, chart, KindTopBand, pr, cr, tab))
+					ch := makeChange(e, cc, chart, KindTopBand, pr, cr, tab)
+					addChange(res, &ch)
 					return
 				}
 			}
@@ -114,9 +112,7 @@ func diffChart(prev *store.Snapshot, prevEntries, curEntries []fetch.Entry, cc, 
 			for _, e := range prevEntries {
 				if e.AppID == appID {
 					ch := makeChange(e, cc, chart, KindTopBand, pr, 0, tab)
-					if ch.Company != "" {
-						res.Changes = append(res.Changes, ch)
-					}
+					addChange(res, &ch)
 					return
 				}
 			}
@@ -133,6 +129,15 @@ func diffChart(prev *store.Snapshot, prevEntries, curEntries []fetch.Entry, cc, 
 		}
 	}
 	_ = prev // 保留签名：prev 快照用于未来扩展（如名字追溯）
+}
+
+// addChange 按是否命中目标公司分流：命中的进 Changes，未命中的进 Unmapped。
+func addChange(res *Result, ch *Change) {
+	if ch.Company == "" {
+		res.Unmapped = append(res.Unmapped, *ch)
+		return
+	}
+	res.Changes = append(res.Changes, *ch)
 }
 
 func makeChange(e fetch.Entry, cc, chart string, kind Kind, from, to int, tab *mapping.Table) Change {

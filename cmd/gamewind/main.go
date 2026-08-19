@@ -275,7 +275,7 @@ func analyzeReportAndNotify(cfg *config.Config, tab *mapping.Table, snap, prev *
 	}
 	cross := analyze.CrossRegion(results)
 	baseline := prev == nil
-	md := report.Build(date, results, cross, snap.Failed, baseline)
+	md := report.Build(date, snap, prev, tab, results, cross, snap.Failed, baseline)
 
 	dir := dataDir(opts)
 	if err := os.MkdirAll(dir+"/reports", 0o755); err == nil {
@@ -285,7 +285,7 @@ func analyzeReportAndNotify(cfg *config.Config, tab *mapping.Table, snap, prev *
 
 	hasChanges := false
 	for _, r := range results {
-		if len(r.Changes) > 0 {
+		if len(r.Changes) > 0 || len(r.Unmapped) > 0 {
 			hasChanges = true
 			break
 		}
@@ -296,7 +296,7 @@ func analyzeReportAndNotify(cfg *config.Config, tab *mapping.Table, snap, prev *
 		if !hasChanges && !cfg.Notify.NotifyWhenQuiet && !baseline {
 			fmt.Println("ℹ️ 今日无重大变化，不推送（notify_when_quiet=false）")
 		} else {
-			if err := notifyAll(cfg, results, date, hasChanges, baseline, md, dir); err != nil {
+			if err := notifyAll(cfg, results, cross, date, hasChanges, baseline, md, dir); err != nil {
 				fmt.Fprintln(os.Stderr, "推送失败:", err)
 				return 1
 			}
@@ -306,7 +306,7 @@ func analyzeReportAndNotify(cfg *config.Config, tab *mapping.Table, snap, prev *
 }
 
 // notifyAll 组装并推送企业微信消息；用 state.json 防同一天重复推送。
-func notifyAll(cfg *config.Config, results map[string]*analyze.Result, date string, hasChanges, baseline bool, md, dir string) error {
+func notifyAll(cfg *config.Config, results map[string]*analyze.Result, cross []string, date string, hasChanges, baseline bool, md, dir string) error {
 	w := notify.New(cfg.Notify.WebhookURL)
 	if w == nil {
 		return nil
@@ -325,12 +325,13 @@ func notifyAll(cfg *config.Config, results map[string]*analyze.Result, date stri
 		kind = "quiet"
 		msgs = []string{header + "\n\n今日无重大变化。" + footer}
 	default:
-		sections := map[string]string{}
-		for cc := range results {
-			sections[cc] = report.RegionSection(cc, results[cc])
+		// 推送精简版：总结 + 待确认（无关公司只在落盘报告）
+		body := report.SummarySection(results, cross, false)
+		if pend := report.PendingSection(results); pend != "" {
+			body += "\n\n" + pend
 		}
 		var err error
-		msgs, err = notify.BuildMessages(header, sections, footer)
+		msgs, err = notify.BuildMessages(header, body, footer)
 		if err != nil {
 			return err
 		}

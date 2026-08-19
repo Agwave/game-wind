@@ -247,3 +247,39 @@ func TestCrossRegion(t *testing.T) {
 		t.Errorf("跨区信号内容不符: %s", cross[0])
 	}
 }
+
+// TestUnmappedRise 未映射游戏的明显上升应收录到 Unmapped（供报告补充段使用），不进入 Changes。
+func TestUnmappedRise(t *testing.T) {
+	prev := &store.Snapshot{Date: "2026-08-17", Charts: map[string]*store.Chart{
+		"cn": {TopGrossing: chart(entry("id100", "某未映射游戏", 80))},
+	}}
+	cur := &store.Snapshot{Date: "2026-08-18", Charts: map[string]*store.Chart{
+		"cn": {TopGrossing: chart(entry("id100", "某未映射游戏", 40))}, // 80→40 上升40 ≥30
+	}}
+	tab := loadTestTable(t)
+	res := Analyze(prev, cur, "cn", tab, config.Region{GrossingRise: 30})
+	if len(res.Unmapped) != 1 {
+		t.Fatalf("期望 1 条未映射上升, 实际 %+v", res.Unmapped)
+	}
+	if res.Unmapped[0].Kind != KindRise || res.Unmapped[0].Company != "" {
+		t.Errorf("期望 Rise 且未映射, 实际 %+v", res.Unmapped[0])
+	}
+	if len(res.Changes) != 0 {
+		t.Errorf("未映射上升不应进入 Changes: %+v", res.Changes)
+	}
+}
+
+// TestUnmappedTopBand 未映射游戏进入 Top10 也应录入 Unmapped。
+func TestUnmappedTopBand(t *testing.T) {
+	prev := &store.Snapshot{Date: "2026-08-17", Charts: map[string]*store.Chart{
+		"cn": {TopGrossing: chart(entry("id100", "某未映射游戏", 12))},
+	}}
+	cur := &store.Snapshot{Date: "2026-08-18", Charts: map[string]*store.Chart{
+		"cn": {TopGrossing: chart(entry("id100", "某未映射游戏", 6))}, // 12→6 进入 Top10
+	}}
+	tab := loadTestTable(t)
+	res := Analyze(prev, cur, "cn", tab, config.Region{GrossingTopBand: 10})
+	if len(res.Unmapped) != 1 || res.Unmapped[0].Kind != KindTopBand {
+		t.Fatalf("期望 1 条未映射 Top10 变动, 实际 %+v", res.Unmapped)
+	}
+}

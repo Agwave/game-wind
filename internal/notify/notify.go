@@ -66,28 +66,20 @@ func (w *WeCom) SendMarkdown(content string) error {
 	return nil
 }
 
-// BuildMessages 按地区拆分推送内容：每条 = header + 一个地区小节 + footer。
-// 小节超过 MaxBytes 时按行截断并注明省略条数（完整报告在 data/reports/ 落盘，不丢失信息）。
-func BuildMessages(header string, sections map[string]string, footer string) ([]string, error) {
-	var msgs []string
-	for _, cc := range sortedKeys(sections) {
-		sec := sections[cc]
-		if sec == "" {
-			continue
-		}
-		msg := header + "\n" + sec + "\n" + footer
-		if len(msg) > MaxBytes {
-			msg = header + "\n" + truncateSection(sec) + "\n" + footer
-		}
-		msgs = append(msgs, msg)
+// BuildMessages 组装一条推送：header + body + footer；body 超过 MaxBytes 按行截断并注明省略行数。
+// 完整报告在 data/reports/ 落盘，不丢失信息。
+func BuildMessages(header, body, footer string) ([]string, error) {
+	msg := header + "\n" + body + "\n" + footer
+	if len(msg) <= MaxBytes {
+		return []string{msg}, nil
 	}
-	return msgs, nil
+	return []string{header + "\n" + truncateBody(body) + "\n" + footer}, nil
 }
 
-// truncateSection 按行截断地区小节，保证整体不超过 MaxBytes。
-func truncateSection(sec string) string {
+// truncateBody 按行截断正文，保证整体不超过 MaxBytes。
+func truncateBody(body string) string {
 	base := MaxBytes - 64 // 给 header/footer 和省略说明预留
-	lines := strings.Split(sec, "\n")
+	lines := strings.Split(body, "\n")
 	var kept []string
 	used := 0
 	for _, l := range lines {
@@ -100,7 +92,7 @@ func truncateSection(sec string) string {
 	}
 	skipped := len(lines) - len(kept)
 	if skipped > 0 {
-		kept = append(kept, fmt.Sprintf("…（内容过长，已省略 %d 条，完整报告见 data/reports/）", skipped))
+		kept = append(kept, fmt.Sprintf("…（内容过长，已省略 %d 行，完整报告见 data/reports/）", skipped))
 	}
 	return strings.Join(kept, "\n")
 }
@@ -116,27 +108,4 @@ func (w *WeCom) SendAll(msgs []string) error {
 		}
 	}
 	return nil
-}
-
-func sortedKeys(m map[string]string) []string {
-	keys := make([]string, 0, len(m))
-	for k := range m {
-		keys = append(keys, k)
-	}
-	// 固定顺序：cn, us, jp, kr
-	order := []string{"cn", "us", "jp", "kr"}
-	seen := make(map[string]bool, len(keys))
-	var out []string
-	for _, c := range order {
-		if _, ok := m[c]; ok {
-			out = append(out, c)
-			seen[c] = true
-		}
-	}
-	for _, k := range keys {
-		if !seen[k] {
-			out = append(out, k)
-		}
-	}
-	return out
 }
