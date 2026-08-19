@@ -39,8 +39,7 @@ type Change struct {
 
 // Result 一个地区的分析结果。
 type Result struct {
-	Changes  []Change
-	Unmapped []Change // 未映射到目标公司的重大变化（Company 为空），供报告「补充·待确认」使用
+	Changes []Change
 }
 
 // Analyze 对比 prev 与 cur 两个快照，产出地区 cc 的重大变化。
@@ -131,13 +130,11 @@ func diffChart(prev *store.Snapshot, prevEntries, curEntries []fetch.Entry, cc, 
 	_ = prev // 保留签名：prev 快照用于未来扩展（如名字追溯）
 }
 
-// addChange 按是否命中目标公司分流：命中的进 Changes，未命中的进 Unmapped。
+// addChange 追加一条变化；未命中目标公司的（未映射）不记录。
 func addChange(res *Result, ch *Change) {
-	if ch.Company == "" {
-		res.Unmapped = append(res.Unmapped, *ch)
-		return
+	if ch.Company != "" {
+		res.Changes = append(res.Changes, *ch)
 	}
-	res.Changes = append(res.Changes, *ch)
 }
 
 func makeChange(e fetch.Entry, cc, chart string, kind Kind, from, to int, tab *mapping.Table) Change {

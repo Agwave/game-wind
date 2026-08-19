@@ -43,9 +43,6 @@ companies:
     games:
       - ids: [id4]
         names: [梦三国]
-unrelated_artists:
-  - Nintendo
-  - miHoYo
 `
 	p := filepath.Join(t.TempDir(), "games.yaml")
 	if err := os.WriteFile(p, []byte(yamlContent), 0o644); err != nil {
@@ -197,56 +194,6 @@ func TestSummarySectionBaseline(t *testing.T) {
 	got := SummarySection(nil, nil, true)
 	if !strings.Contains(got, "基线") {
 		t.Errorf("应输出基线提示: %s", got)
-	}
-}
-
-func TestPendingSection(t *testing.T) {
-	results := map[string]*analyze.Result{
-		"cn": {Unmapped: []analyze.Change{
-			{Game: "灵墟幻想", AppID: "888", Region: "cn", Chart: fetch.ChartGrossing, Kind: analyze.KindNew, ToRank: 8},
-			{Game: "山海迷城", AppID: "999", Region: "cn", Chart: fetch.ChartGrossing, Kind: analyze.KindRise, FromRank: 40, ToRank: 22},
-		}},
-	}
-	got := PendingSection(results)
-	for _, want := range []string{
-		"待确认（未映射，可能属于目标公司，请确认）：",
-		"🇨🇳 畅销榜 第8 灵墟幻想(id:888) 新进",
-		"🇨🇳 畅销榜 第22 山海迷城(id:999) 上升↑18",
-	} {
-		if !strings.Contains(got, want) {
-			t.Errorf("缺少 %q\n---\n%s", want, got)
-		}
-	}
-}
-
-func TestUnrelatedSection(t *testing.T) {
-	cur := &store.Snapshot{Date: "2026-08-19", Charts: map[string]*store.Chart{
-		"cn": {TopGrossing: chart(
-			entry("id1", "王者荣耀", "", 1),
-			entry("zzz", "塞尔达传说", "Nintendo Co., Ltd.", 12),
-			entry("yyy", "原神", "miHoYo", 9),
-		)},
-	}}
-	got := UnrelatedSection(cur, testTable(t))
-	for _, want := range []string{
-		"无关公司（确认非目标上市公司，其变动忽略）：",
-		"miHoYo",
-		"Nintendo",
-		"原神 第9",
-	} {
-		if !strings.Contains(got, want) {
-			t.Errorf("缺少 %q\n---\n%s", want, got)
-		}
-	}
-	if strings.Contains(got, "王者荣耀") {
-		t.Errorf("目标公司游戏不应列为无关:\n%s", got)
-	}
-}
-
-func TestSupplementEmpty(t *testing.T) {
-	got := SupplementSection(&store.Snapshot{Charts: map[string]*store.Chart{}}, testTable(t), map[string]*analyze.Result{"cn": {}})
-	if got != "" {
-		t.Errorf("补充段应输出空, 实际: %s", got)
 	}
 }
 

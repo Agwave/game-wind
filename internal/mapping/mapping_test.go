@@ -91,49 +91,16 @@ func TestLoadErrors(t *testing.T) {
 	}
 }
 
-// TestUnrelatedArtists 无关发行商名单：加载、小写子串匹配、空 artist、不误伤目标公司。
-func TestUnrelatedArtists(t *testing.T) {
-	yamlContent := `
-unrelated_artists:
-  - Nintendo
-  - miHoYo
-  - King
-companies:
-  - company: 腾讯控股
-    code: "0700.HK"
-    market: 港股
-    games:
-      - names: [王者荣耀]
-`
-	p := filepath.Join(t.TempDir(), "games.yaml")
-	if err := os.WriteFile(p, []byte(yamlContent), 0o644); err != nil {
-		t.Fatal(err)
+// TestCompaniesOrder Table.Companies 应保留 yaml 中的公司顺序（供报告按公司分段）。
+func TestCompaniesOrder(t *testing.T) {
+	tab := loadTable(t)
+	want := []string{"腾讯控股", "网易"}
+	if len(tab.Companies) != len(want) {
+		t.Fatalf("公司数量不符: %+v", tab.Companies)
 	}
-	tab, err := Load(p)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(tab.Companies) != 1 || tab.Companies[0].Company != "腾讯控股" {
-		t.Errorf("Companies 应保留 yaml 顺序: %+v", tab.Companies)
-	}
-	if !tab.IsUnrelated("Nintendo Co., Ltd.") {
-		t.Error("小写子串应命中 Nintendo Co., Ltd.")
-	}
-	if !tab.IsUnrelated("miHoYo Limited") {
-		t.Error("应命中 miHoYo Limited")
-	}
-	if tab.IsUnrelated("") {
-		t.Error("空 artist 不应命中")
-	}
-	if tab.IsUnrelated("Century Games Pte. Ltd.") {
-		t.Error("Century（目标公司出海品牌）不应命中")
-	}
-	// King 不应命中 Kingsoft（金山软件，目标公司）——整词边界匹配
-	if tab.IsUnrelated("Chengdu Kingsoft Shiyou Zhuoli Technology Co., Ltd.") {
-		t.Error("King 不应整词命中 Kingsoft（金山软件）")
-	}
-	// King 独立成词仍应命中（Candy Crush 发行商）
-	if !tab.IsUnrelated("King") {
-		t.Error("独立词 King 应命中")
+	for i, w := range want {
+		if tab.Companies[i].Company != w {
+			t.Errorf("公司顺序不符: 期望 %s 第%d, 实际 %+v", w, i, tab.Companies)
+		}
 	}
 }

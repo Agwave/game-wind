@@ -285,7 +285,7 @@ func analyzeReportAndNotify(cfg *config.Config, tab *mapping.Table, snap, prev *
 
 	hasChanges := false
 	for _, r := range results {
-		if len(r.Changes) > 0 || len(r.Unmapped) > 0 {
+		if len(r.Changes) > 0 {
 			hasChanges = true
 			break
 		}
