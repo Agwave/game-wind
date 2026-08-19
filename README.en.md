@@ -16,7 +16,7 @@ a new game breaking out, or a title rising across multiple regions at once. Gene
 - [Quick Start](#quick-start)
 - [Command Reference](#command-reference)
 - [Configuration](#configuration)
-- [Scheduling (WSL2)](#scheduling-wsl2)
+- [Scheduling](#scheduling)
 - [Data Source](#data-source)
 - [Revenue Estimates](#revenue-estimates)
 - [FAQ](#faq)
@@ -118,19 +118,84 @@ Maintenance tips:
 - Names containing `: ` (colon + space) **must be quoted**, or YAML parsing fails
 - Only track A-share companies and HK-listed companies eligible for Stock Connect
 
-## Scheduling (WSL2)
+## Scheduling
 
-Runs daily at 9:00 (crontab example):
+The tool has **no built-in scheduler** — an external timer triggers `gamewind run` (fetch → analyze → report → push to WeCom). First build the binary and create the log directory:
+
+```bash
+go build -o bin/gamewind ./cmd/gamewind
+mkdir -p logs
+```
+
+### Native Linux
+
+**Recommended: systemd timer** (supports `Persistent` catch-up for missed runs; logs go to journald):
+
+`/etc/systemd/system/gamewind.service`:
+
+```ini
+[Unit]
+Description=game-wind daily run
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=<absolute project path>
+ExecStart=<absolute project path>/bin/gamewind run
+```
+
+`/etc/systemd/system/gamewind.timer`:
+
+```ini
+[Unit]
+Description=game-wind daily 09:00
+
+[Timer]
+OnCalendar=*-*-* 09:00:00
+Persistent=true
+RandomizedDelaySec=120
+
+[Install]
+WantedBy=timers.target
+```
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now gamewind.timer
+systemctl list-timers gamewind.timer   # show next fire time
+journalctl -u gamewind.service         # show run logs
+```
+
+**Or crontab** (simplest; replace `/path/to/game-wind` with your actual path):
+
+```bash
+crontab -e
+# daily at 09:00
+0 9 * * * cd /path/to/game-wind && ./bin/gamewind run >> logs/cron.log 2>&1
+```
+
+**Anacron for laptops that are often off** (catches up on next boot; append to `/etc/anacrontab`):
 
 ```
-0 9 * * * cd ~/ai-project/game-wind && ./bin/gamewind run >> logs/cron.log 2>&1
+1  5  gamewind.daily  cd /path/to/game-wind && ./bin/gamewind run >> logs/cron.log 2>&1
 ```
 
-Notes:
+### WSL2
 
-- **The job does not run while WSL is shut down**. Keep WSL running (or schedule a Windows Task to wake it)
-- The cron service in WSL must be started manually after each boot: `sudo service cron start`
-  (or enable systemd via `[boot] systemd=true` in `/etc/wsl.conf`, then `sudo systemctl enable --now cron`)
+WSL2 is Linux, so the commands above work identically, with two caveats:
+
+1. **Keep cron / systemd resident** (WSL doesn't enable systemd by default):
+   - cron: run `sudo service cron start` after each boot
+   - or set `[boot] systemd=true` in `/etc/wsl.conf` → restart with `wsl --shutdown` → `sudo systemctl enable --now cron`, then the systemd timer approach above works directly
+2. **WSL must be running at the scheduled time**, otherwise it won't fire; systemd's `Persistent=true` catches up on the next start.
+
+To guarantee triggering from the Windows side (even when WSL is off), use Task Scheduler calling:
+
+```
+wsl.exe -d <distro> bash -lc "cd /path/to/game-wind && ./bin/gamewind run >> logs/cron.log 2>&1"
+```
+
+(Set the trigger to daily 09:00 and tick "run task as soon as possible after a scheduled start is missed".)
 
 ## Data Source
 

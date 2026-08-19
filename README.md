@@ -14,7 +14,7 @@
 - [快速开始](#快速开始)
 - [命令参考](#命令参考)
 - [配置](#配置)
-- [定时任务（WSL2）](#定时任务wsl2)
+- [定时任务](#定时任务)
 - [数据源](#数据源)
 - [流水估算说明](#流水估算说明)
 - [常见问题](#常见问题)
@@ -116,19 +116,84 @@ companies:
 - 名字里含 `: `（冒号+空格）时**必须加引号**，否则 YAML 解析报错
 - 只收录 A 股上市公司 + 港股通标的港股
 
-## 定时任务（WSL2）
+## 定时任务
 
-每日 9:00 自动运行（crontab 示例）：
+工具本身**不内置定时**，由外部定时器触发 `gamewind run`（抓取 → 分析 → 报告 → 推送企业微信）。先构建二进制并建日志目录：
+
+```bash
+go build -o bin/gamewind ./cmd/gamewind
+mkdir -p logs
+```
+
+### 原生 Linux
+
+**推荐 systemd timer**（支持 `Persistent` 漏跑补跑，日志进 journald）：
+
+`/etc/systemd/system/gamewind.service`：
+
+```ini
+[Unit]
+Description=game-wind daily run
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=<项目绝对路径>
+ExecStart=<项目绝对路径>/bin/gamewind run
+```
+
+`/etc/systemd/system/gamewind.timer`：
+
+```ini
+[Unit]
+Description=game-wind daily 09:00
+
+[Timer]
+OnCalendar=*-*-* 09:00:00
+Persistent=true
+RandomizedDelaySec=120
+
+[Install]
+WantedBy=timers.target
+```
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now gamewind.timer
+systemctl list-timers gamewind.timer   # 查看下次触发时间
+journalctl -u gamewind.service         # 查看每次运行日志
+```
+
+**或 crontab**（最简单，`/path/to/game-wind` 换成你的项目实际路径）：
+
+```bash
+crontab -e
+# 每天 9:00
+0 9 * * * cd /path/to/game-wind && ./bin/gamewind run >> logs/cron.log 2>&1
+```
+
+**常关机的笔记本用 anacron**（下次开机补跑，`/etc/anacrontab` 追加）：
 
 ```
-0 9 * * * cd ~/ai-project/game-wind && ./bin/gamewind run >> logs/cron.log 2>&1
+1  5  gamewind.daily  cd /path/to/game-wind && ./bin/gamewind run >> logs/cron.log 2>&1
 ```
 
-注意：
+### WSL2
 
-- **WSL 关闭时不会执行**。保持 WSL 常开（或另配 Windows 任务计划唤醒）
-- WSL 里 cron 服务需要手动启动（每次开机后）：`sudo service cron start`
-  （或在 `/etc/wsl.conf` 里 `[boot] systemd=true`，之后 `sudo systemctl enable --now cron`）
+WSL2 本身就是 Linux，上述命令同样适用，但有两个前提：
+
+1. **让 cron / systemd 常驻**（WSL 默认不开 systemd）：
+   - cron：每次开机后 `sudo service cron start`
+   - 或 `/etc/wsl.conf` 写 `[boot] systemd=true` → `wsl --shutdown` 重启后 `sudo systemctl enable --now cron`，之后可直接用上面的 systemd timer 方案
+2. **WSL 到点必须运行中**，否则不触发；systemd 的 `Persistent=true` 会在下次启动时补跑。
+
+若想由 Windows 层面保证触发（即使 WSL 被关），用 Windows 任务计划程序调用：
+
+```
+wsl.exe -d <发行版> bash -lc "cd /path/to/game-wind && ./bin/gamewind run >> logs/cron.log 2>&1"
+```
+
+（触发器设为每天 9:00，勾选「错过计划后尽快运行」。）
 
 ## 数据源
 
