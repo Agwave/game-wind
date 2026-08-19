@@ -6,9 +6,9 @@ Automatically fetches the iOS App Store **top-grossing and top-free game charts*
 every day, compares them against historical snapshots, and flags noteworthy movements — a key game's revenue surging,
 a new game breaking out, or a title rising across multiple regions at once. Generates a Markdown report and pushes it to WeCom (WeChat Work).
 
-> **Scope**: Only tracks **A-share / HK-listed Chinese game companies** (including their overseas games).
-> Unlisted companies (miHoYo, Lilith, etc.) and foreign publishers are not tracked, but appear in the
-> report's "unmapped" list for reference.
+> **Scope**: Only tracks **A-share companies and HK-listed companies eligible for Stock Connect (港股通)**
+> — including their overseas games. Unlisted companies (miHoYo, Lilith, etc.) and foreign publishers are not tracked;
+> games missing from the mapping table are not reported individually — maintain them via the `data/update_game_yaml.md` prompt.
 
 ## Table of Contents
 
@@ -28,10 +28,11 @@ a new game breaking out, or a title rising across multiple regions at once. Gene
 - 📊 **Major-change detection** (thresholds configurable per region in `config.yaml`):
   - Top-grossing: new entry in top 50 / rank up ≥30 / any change within top 10
   - Top-free: new entry in top 20 / rank up ≥30
-- 🏆 **Cross-region signals**: the same game changing across multiple regions at once
+- 🏆 **Cross-region signals**: the same game changing across multiple regions at once (shown in the summary section)
+- 🗂️ **Three-section report**: title → per-company breakdown (every whitelisted company, top 5 per chart with rank & change ↑↓new—, "not on charts" marked) → summary (notable moves + cross-region signals)
 - 💰 **Revenue estimates**: CN top-grossing rank → rough daily revenue band (reference only)
 - 📝 **Reports on disk**: `data/reports/YYYY-MM-DD.md`, snapshots at `data/YYYY-MM-DD.json`
-- 📲 **WeCom push**: one message per region, auto-truncated when too long; stays quiet by default when nothing major happens; no duplicate pushes on the same day
+- 📲 **WeCom push**: the full report, split across multiple messages line-by-line when too long; stays quiet by default when nothing major happens; no duplicate pushes on the same day
 
 ## Quick Start
 
@@ -111,9 +112,11 @@ companies:
 
 Maintenance tips:
 
-- The report's "unmapped new entries" list includes app IDs — add them to the table and matching takes effect immediately
+- Hand `data/update_game_yaml.md` to an LLM to update the table per the spec (read the latest snapshot → verify ownership → run checks)
+- The first entry in each game's `names` is its **canonical name** (shown consistently across regions): prefer Chinese, otherwise the official name
+- `core: true` marks a company's key revenue-driving games
 - Names containing `: ` (colon + space) **must be quoted**, or YAML parsing fails
-- Only track A-share / HK-listed companies
+- Only track A-share companies and HK-listed companies eligible for Stock Connect
 
 ## Scheduling (WSL2)
 
@@ -143,7 +146,7 @@ No estimates for overseas charts.
 
 ## FAQ
 
-- **Push too long**: WeCom markdown messages are capped at 4096 bytes; oversized content is truncated line-by-line with a note about skipped entries — the full report is always saved to `data/reports/`
+- **Push too long**: WeCom markdown messages are capped at 4096 bytes; oversized content is split across multiple messages line-by-line so nothing is lost — the full report is always saved to `data/reports/`
 - **Duplicate pushes**: identical content on the same day is not pushed twice (fingerprint stored in `data/state.json`)
 - **First run**: no history to compare, only a baseline is created plus a confirmation message
 - **Fetch failures**: each chart retries twice; persistent failures are noted in the report's fetch status without affecting other charts
