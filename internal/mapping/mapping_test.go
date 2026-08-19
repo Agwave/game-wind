@@ -128,4 +128,12 @@ companies:
 	if tab.IsUnrelated("Century Games Pte. Ltd.") {
 		t.Error("Century（目标公司出海品牌）不应命中")
 	}
+	// King 不应命中 Kingsoft（金山软件，目标公司）——整词边界匹配
+	if tab.IsUnrelated("Chengdu Kingsoft Shiyou Zhuoli Technology Co., Ltd.") {
+		t.Error("King 不应整词命中 Kingsoft（金山软件）")
+	}
+	// King 独立成词仍应命中（Candy Crush 发行商）
+	if !tab.IsUnrelated("King") {
+		t.Error("独立词 King 应命中")
+	}
 }

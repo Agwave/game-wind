@@ -109,18 +109,45 @@ func normalizeArtists(ss []string) []string {
 	return out
 }
 
-// IsUnrelated 判断开发者账号名（Artist）是否命中无关发行商名单（小写子串匹配，大小写不敏感）。
+// IsUnrelated 判断开发者账号名（Artist）是否命中无关发行商名单。
+// 按整词匹配（大小写不敏感）：如 King 只命中独立词 "King"，不命中 "Kingsoft"（金山软件，目标公司）。
 func (t *Table) IsUnrelated(artist string) bool {
 	if t == nil || artist == "" {
 		return false
 	}
 	artist = strings.ToLower(artist)
 	for _, a := range t.UnrelatedArtists {
-		if a != "" && strings.Contains(artist, a) {
+		if a != "" && containsWord(artist, a) {
 			return true
 		}
 	}
 	return false
+}
+
+// containsWord 判断 s（已小写）中是否包含独立成词的 word（两侧为非字母数字字符）。
+func containsWord(s, word string) bool {
+	if word == "" {
+		return false
+	}
+	start := 0
+	for {
+		i := strings.Index(s[start:], word)
+		if i < 0 {
+			return false
+		}
+		pos := start + i
+		beforeOK := pos == 0 || !isWordChar(s[pos-1])
+		afterOK := pos+len(word) == len(s) || !isWordChar(s[pos+len(word)])
+		if beforeOK && afterOK {
+			return true
+		}
+		start = pos + len(word)
+	}
+}
+
+// isWordChar 是否为单词字符（ASCII 字母或数字；非 ASCII 一律视为边界）。
+func isWordChar(c byte) bool {
+	return c >= 'a' && c <= 'z' || c >= '0' && c <= '9'
 }
 
 // Match 按 app_id → 精确名 → 包含名 的顺序匹配一条榜单记录。
