@@ -771,7 +771,11 @@ func collectPositions(cur, prev *store.Snapshot, tab *mapping.Table) map[string]
 				if m == nil {
 					continue
 				}
-				p := chartPos{game: m.Game, rank: e.Rank, prev: prevRanks[prevKey][e.AppID]}
+				pr := prevRanks[prevKey][e.AppID]
+				if prev == nil {
+					pr = -1 // 首次运行：无上期排名，变动标 —
+				}
+				p := chartPos{game: m.Game, rank: e.Rank, prev: pr}
 				if out[m.Company] == nil {
 					out[m.Company] = map[posKey][]chartPos{}
 				}
@@ -986,7 +990,7 @@ func UnrelatedSection(cur *store.Snapshot, tab *mapping.Table) string {
 		rank int
 	}
 	byArtist := map[string][]unrel{}
-	for cc, ch := range cur.Charts {
+	for _, ch := range cur.Charts {
 		for _, chartType := range chartOrder {
 			var entries []fetch.Entry
 			if chartType == fetch.ChartGrossing {
