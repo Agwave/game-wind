@@ -12,6 +12,27 @@
 # 匹配会自动生效（id 匹配跨地区稳定，不受本地化标题影响）。
 #
 # ids/names 均来自 2026-08-18 真实榜单抓取；未上过榜的游戏为 name-only 条目，等它们上榜时生效。
+#
+# 无关发行商名单：确认非目标上市公司的发行商。榜单上命中 Artist（开发者账号名）的游戏
+# 视为无关，报告归到「无关公司」，其变动不再单独提及。可用「补充·待确认」持续补充。
+# 注意：不要加入 Century（世纪华通出海品牌，属于目标公司）。
+unrelated_artists:
+  - Nintendo
+  - miHoYo
+  - Supercell
+  - Playrix
+  - King
+  - Roblox
+  - Netmarble
+  - Nexon
+  - Krafton
+  - Konami
+  - Bandai Namco
+  - Square Enix
+  - Capcom
+  - SEGA
+  - IronSource
+  - Voodoo
 companies:
   # ================= 腾讯控股 0700.HK =================
   - company: 腾讯控股
