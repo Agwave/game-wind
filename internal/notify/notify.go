@@ -66,35 +66,38 @@ func (w *WeCom) SendMarkdown(content string) error {
 	return nil
 }
 
-// BuildMessages 组装一条推送：header + body + footer；body 超过 MaxBytes 按行截断并注明省略行数。
-// 完整报告在 data/reports/ 落盘，不丢失信息。
+// BuildMessages 把 header + body 按行拆成多条 ≤MaxBytes 的消息，footer 追加到最后一条。
+// 完整报告因此能分段完整推送，不丢内容；单条过长时在行边界换段。
 func BuildMessages(header, body, footer string) ([]string, error) {
-	msg := header + "\n" + body + "\n" + footer
-	if len(msg) <= MaxBytes {
-		return []string{msg}, nil
+	content := header + "\n" + body
+	if content == "" {
+		content = header
 	}
-	return []string{header + "\n" + truncateBody(body) + "\n" + footer}, nil
-}
-
-// truncateBody 按行截断正文，保证整体不超过 MaxBytes。
-func truncateBody(body string) string {
-	base := MaxBytes - 64 // 给 header/footer 和省略说明预留
-	lines := strings.Split(body, "\n")
-	var kept []string
-	used := 0
-	for _, l := range lines {
-		cost := len(l) + 1 // 含换行
-		if used+cost > base {
-			break
+	var msgs []string
+	var buf []string
+	size := 0
+	flush := func() {
+		if len(buf) == 0 {
+			return
 		}
-		kept = append(kept, l)
-		used += cost
+		msgs = append(msgs, strings.Join(buf, "\n"))
+		buf = buf[:0]
+		size = 0
 	}
-	skipped := len(lines) - len(kept)
-	if skipped > 0 {
-		kept = append(kept, fmt.Sprintf("…（内容过长，已省略 %d 行，完整报告见 data/reports/）", skipped))
+	for _, l := range strings.Split(content, "\n") {
+		cost := len(l) + 1 // 含换行
+		if size > 0 && size+cost > MaxBytes {
+			flush()
+		}
+		buf = append(buf, l)
+		size += cost
 	}
-	return strings.Join(kept, "\n")
+	flush()
+	if len(msgs) == 0 {
+		msgs = []string{""}
+	}
+	msgs[len(msgs)-1] += "\n" + footer
+	return msgs, nil
 }
 
 // SendAll 依次发送多条消息。

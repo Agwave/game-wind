@@ -296,7 +296,7 @@ func analyzeReportAndNotify(cfg *config.Config, tab *mapping.Table, snap, prev *
 		if !hasChanges && !cfg.Notify.NotifyWhenQuiet && !baseline {
 			fmt.Println("ℹ️ 今日无重大变化，不推送（notify_when_quiet=false）")
 		} else {
-			if err := notifyAll(cfg, results, cross, date, hasChanges, baseline, md, dir); err != nil {
+			if err := notifyAll(cfg, date, hasChanges, baseline, md, dir); err != nil {
 				fmt.Fprintln(os.Stderr, "推送失败:", err)
 				return 1
 			}
@@ -306,7 +306,7 @@ func analyzeReportAndNotify(cfg *config.Config, tab *mapping.Table, snap, prev *
 }
 
 // notifyAll 组装并推送企业微信消息；用 state.json 防同一天重复推送。
-func notifyAll(cfg *config.Config, results map[string]*analyze.Result, cross []string, date string, hasChanges, baseline bool, md, dir string) error {
+func notifyAll(cfg *config.Config, date string, hasChanges, baseline bool, md, dir string) error {
 	w := notify.New(cfg.Notify.WebhookURL)
 	if w == nil {
 		return nil
@@ -325,13 +325,9 @@ func notifyAll(cfg *config.Config, results map[string]*analyze.Result, cross []s
 		kind = "quiet"
 		msgs = []string{header + "\n\n今日无重大变化。" + footer}
 	default:
-		// 推送精简版：总结 + 待确认（无关公司只在落盘报告）
-		body := report.SummarySection(results, cross, false)
-		if pend := report.PendingSection(results); pend != "" {
-			body += "\n\n" + pend
-		}
+		// 推送完整四段报告（游戏公司+总结+补充），超过 MaxBytes 按行截断，完整版见落盘文件
 		var err error
-		msgs, err = notify.BuildMessages(header, body, footer)
+		msgs, err = notify.BuildMessages("", md, footer)
 		if err != nil {
 			return err
 		}

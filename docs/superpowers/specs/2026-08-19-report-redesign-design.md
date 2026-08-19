@@ -170,8 +170,8 @@ func SupplementSection(cur *store.Snapshot, tab *mapping.Table, results map[stri
 - `analyzeReportAndNotify`：`report.Build(date, cur, prev, tab, results, cross, snap.Failed, baseline)`
 - `hasChanges` 判定扩展为：任一地区 `len(Changes) > 0 || len(Unmapped) > 0`（未映射明显变动也应触发推送）
 - `notifyAll`：
-  - 有变化时推送正文 = `SummarySection` + `PendingSection`（待确认），由 `notify.BuildMessages` 截断；「无关公司」只出现在落盘报告，不进推送
-  - 底部 footer 保留 `完整报告：data/reports/<date>.md`
+  - 有变化时推送正文 = **完整四段报告**（游戏公司+总结+补充），`notify.BuildMessages` 按行拆成多条 ≤MaxBytes 的消息分段推送，保证内容完整（2026-08-19 调整为全量推送，此前为「总结+待确认」精简版）
+  - 底部 footer 保留 `完整报告：data/reports/<date>.md`（追加到最后一条）
   - baseline / 安静 文案不变
 - `notify.BuildMessages` 签名简化为 `(header, body string, footer string) ([]string, error)`，单条 body 超过 MaxBytes 按行截断（复用现有 `truncateSection` 逻辑，改名为 `truncateBody`）
 
