@@ -14,7 +14,7 @@
 # 维护建议：报告中的「未映射新进游戏」清单会给出 app_id，把 id 加进对应游戏即可，
 # 匹配会自动生效（id 匹配跨地区稳定，不受本地化标题影响）。
 #
-# ids/names 均来自 2026-08-18 真实榜单抓取；未上过榜的游戏为 name-only 条目，等它们上榜时生效。
+# ids/names 均来自 2026-08-19 真实榜单抓取；未上过榜的游戏为 name-only 条目，等它们上榜时生效。
 companies:
   # ================= 腾讯控股 0700.HK =================
   - company: 腾讯控股
@@ -24,9 +24,10 @@ companies:
       - ids: [989673964]
         names: [王者荣耀]
         core: true
-      - ids: [1321803705]
-        names: [和平精英]
+      - ids: [1321803705, 1330123889]
+        names: [和平精英, "PUBG MOBILE"]
         core: true
+        note: 含国际版 PUBG MOBILE
       - ids: [1642894547]
         names: [三角洲行动]
         core: true
@@ -74,6 +75,47 @@ companies:
         note: 王者荣耀国际版（官方名 Honor of Kings，避免与国服条目 names 冲突）
       - names: [三角洲行动国际版]
         contains: [Delta Force]
+      - ids: [1612566389]
+        names: [王者荣耀世界]
+        note: 腾讯天美开放世界新游（2026 上线）
+      - ids: [6711336814]
+        names: [美职篮全明星]
+        note: 腾讯 NBA 授权手游
+      - ids: [1132257692]
+        names: [天龙八部手游]
+        note: 畅游研发，腾讯发行
+      - ids: [1488410151]
+        names: [使命召唤手游]
+        contains: [使命召唤]
+      - ids: [1645516720]
+        names: [逆战：未来]
+        note: 腾讯逆战系列手游
+      - ids: [1234954076]
+        names: [红警OL]
+        note: 腾讯红警题材 SLG
+      - ids: [1598249037]
+        names: [极品飞车：集结]
+        note: 腾讯（EA 授权）竞速
+      - ids: [983122251]
+        names: ["魂斗罗：归来", "魂斗罗:归来"]
+        contains: [魂斗罗]
+        note: 腾讯
+      - ids: [6447610302]
+        names: [冒险岛：枫之传说]
+        note: 腾讯发行国服
+      - ids: [6502749617]
+        names: [失控进化]
+        note: 腾讯
+      - ids: [654897098]
+        names: [天天爱消除]
+      - ids: [653350791]
+        names: [天天酷跑]
+      - ids: [493901993]
+        names: [节奏大师]
+      - ids: [403941510]
+        names: [天天象棋]
+      - ids: [1022649876]
+        names: [腾讯围棋]
 
   # ================= 网易 9999.HK =================
   - company: 网易
@@ -88,8 +130,9 @@ companies:
         names: [蛋仔派对]
         core: true
         note: 2025Q3 在线游戏收入同比增收主力
-      - ids: [1330863325]
-        names: [第五人格]
+      - ids: [1330863325, 1347780764]
+        names: [第五人格, "Identity V"]
+        note: 含国际版 Identity V
       - ids: [909211092]
         names: [率土之滨]
       - ids: [1347776121]
@@ -109,14 +152,30 @@ companies:
       - names: [逆水寒]
         core: true
         note: 手游为 2025 在线游戏收入环比增长主要来源，11 月全球发行
-      - names: [巅峰极速]
-        contains: [Racing Master]
+      - ids: [1498874997]
+        names: [巅峰极速]
+        contains: [巅峰极速, Racing Master]
       - names: [阴阳师]
         contains: [阴阳师]
       - names: [光·遇]
         contains: [光·遇]
       - names: [大话西游]
         contains: [大话西游]
+      - ids: [6788287402]
+        names: [梦幻西游：再续前缘]
+        note: 梦幻西游电脑版畅玩服手机端（2026-08 上线）
+      - ids: [1593603378]
+        names: [全明星街球派对]
+        note: 网易 NBA 正版授权街球
+      - ids: [6751222389]
+        names: ["NBA Dunk City"]
+        note: 网易海外篮球手游（韩/日区）
+      - ids: [6474127167]
+        names: [世界之外]
+        note: 网易
+      - ids: [1570194962]
+        names: [王牌竞速]
+        note: 网易竞速手游
 
   # ================= 世纪华通 002602.SZ =================
   - company: 世纪华通
@@ -134,6 +193,19 @@ companies:
       - ids: [6471045672]
         names: ["Tasty Travels: Merge Game", "グルメ・ジャーニー", "테이스티 트레블: 합성 게임"]
       - names: [热血传奇]
+      - ids: [6739669537]
+        names: [传奇世界无双]
+        contains: [传奇世界]
+        note: 世纪华通（盛趣）传奇世界系列
+      - ids: [6748527570]
+        names: [奔奔王国]
+        note: 世纪华通（点点互动）休闲小游戏
+      - ids: [6752886832]
+        names: ["Hotel Legacy", "호텔 레거시"]
+        note: 世纪华通（点点互动）出海合并类
+      - ids: [6760998152]
+        names: ["Family Farm Merge"]
+        note: 世纪华通（点点互动）出海合并类
 
   # ================= 三七互娱 002555.SZ =================
   - company: 三七互娱
@@ -219,8 +291,13 @@ companies:
         contains: [超自然行动组]
         core: true
         note: 2025 增长主引擎，累计流水破 50 亿
-      - names: [原始征途]
+      - ids: [6444558869]
+        names: [原始征途]
+        contains: [原始征途]
         core: true
+      - names: [球球大作战]
+        contains: [球球大作战]
+        note: 巨人网络休闲竞技
 
   # ================= 电魂网络 603258.SH =================
   - company: 电魂网络
@@ -253,6 +330,9 @@ companies:
         core: true
         note: 2025 收入贡献前五，进入成熟期流水回落
       - names: [铃兰之剑]
+      - ids: [1326730621]
+        names: [香肠派对]
+        note: 心动自研派对游戏
 
   # ================= 哔哩哔哩 9626.HK =================
   - company: 哔哩哔哩
