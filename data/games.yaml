@@ -8,6 +8,9 @@
 # core: true 标记该游戏为公司核心业绩支撑游戏（财报/畅销榜佐证的收入主力），
 # 供报告对核心游戏变动优先关注；新加入的核心游戏以 name-only 条目入库，等它们上榜时生效。
 #
+# names[0]（无 names 时取 contains[0]）为该游戏的规范名，报告跨地区统一展示；
+# 规范名优先用中文，无确定中文名时用官方名称（如 Honor of Kings、Puzzles & Survival、Tasty Travels）。
+#
 # 维护建议：报告中的「未映射新进游戏」清单会给出 app_id，把 id 加进对应游戏即可，
 # 匹配会自动生效（id 匹配跨地区稳定，不受本地化标题影响）。
 #
@@ -59,7 +62,7 @@ companies:
         names: [部落冲突（Clash of Clans）]
         contains: [部落冲突]
       - ids: [1585915174]
-        names: ["勝利の女神：NIKKE", "승리의 여신: 니케"]
+        names: ["胜利女神：NIKKE", "勝利の女神：NIKKE", "승리의 여신: 니케"]
         note: 腾讯 Level Infinite 发行，开发商 Shift Up（韩）
       - names: [元梦之星]
       - names: [欢乐麻将]
@@ -68,6 +71,7 @@ companies:
         contains: [QQ炫舞]
       - names: [Honor of Kings]
         contains: [Honor of Kings]
+        note: 王者荣耀国际版（官方名 Honor of Kings，避免与国服条目 names 冲突）
       - names: [三角洲行动国际版]
         contains: [Delta Force]
 
@@ -98,7 +102,7 @@ companies:
       - ids: [6475668638]
         names: [燕云十六声]
       - ids: [1312031248]
-        names: [荒野行動-スマホ版バトロワ, 荒野行动]
+        names: [荒野行动, "荒野行動-スマホ版バトロワ"]
         contains: [荒野行动, 荒野行動]
       - names: [永劫无间]
         contains: [Naraka]
@@ -137,7 +141,7 @@ companies:
     market: A股
     games:
       - ids: [1517980891]
-        names: [パズル&サバイバル]
+        names: ["Puzzles & Survival", "パズル&サバイバル"]
         contains: [Puzzles & Survival]
       - names: [寻道大千]
         core: true
@@ -233,7 +237,7 @@ companies:
     market: A股
     games:
       - ids: [6754679035]
-        names: [히어로 랜드M]
+        names: ["Hero Land M", "히어로 랜드M"]
         contains: [Hero Land M]
         note: Orienjoy 出海，归属待确认；2025 公司核心出海产品为《冒险岛R：进化》《仙境传说：破晓》等
 
@@ -243,7 +247,7 @@ companies:
     market: 港股
     games:
       - ids: [6746151928]
-        names: [두근두근타운, 心动小镇]
+        names: [心动小镇, 두근두근타운]
         core: true
       - names: [出发吧麦芬]
         core: true
@@ -256,12 +260,9 @@ companies:
     market: 港股
     games:
       - ids: [6757360957]
-        names: ["삼국지: 천하결전"]
-        note: 三国志：天下决战（韩国区）
+        names: [三国：谋定天下, "삼국지: 천하결전"]
+        note: 游戏业务绝对核心，2025 助力 B 站首次全年盈利；含韩国区（三国志：天下决战）
         core: true
-      - names: [三国：谋定天下]
-        core: true
-        note: 游戏业务绝对核心，2025 助力 B 站首次全年盈利
       - names: [碧蓝航线]
         core: true
         note: 长线产品，与三谋等构成约七成游戏收入
