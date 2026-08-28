@@ -14,7 +14,7 @@
 # 维护建议：报告中的「未映射新进游戏」清单会给出 app_id，把 id 加进对应游戏即可，
 # 匹配会自动生效（id 匹配跨地区稳定，不受本地化标题影响）。
 #
-# ids/names 均来自 2026-08-19 真实榜单抓取；未上过榜的游戏为 name-only 条目，等它们上榜时生效。
+# ids/names 均来自 2026-08-28 真实榜单抓取；未上过榜的游戏为 name-only 条目，等它们上榜时生效。
 companies:
   # ================= 腾讯控股 0700.HK =================
   - company: 腾讯控股
@@ -43,6 +43,9 @@ companies:
       - ids: [1478101301]
         names: [金铲铲之战]
         core: true
+      - ids: [1480616748]
+        names: [云顶之弈, 전략적 팀 전투]
+        note: TFT 韩服，Riot（腾讯全资子公司）发行
       - ids: [446324234]
         names: [腾讯欢乐斗地主]
       - ids: [1439754823]
@@ -62,13 +65,19 @@ companies:
       - ids: [1595603316]
         names: [部落冲突（Clash of Clans）]
         contains: [部落冲突]
+      - ids: [1595603720]
+        names: [部落冲突：皇室战争]
+        note: Supercell 研发、腾讯发行国服
       - ids: [1585915174]
         names: ["胜利女神：NIKKE", "勝利の女神：NIKKE", "승리의 여신: 니케"]
         note: 腾讯 Level Infinite 发行，开发商 Shift Up（韩）
-      - names: [元梦之星]
-      - names: [欢乐麻将]
+      - ids: [1632344522]
+        names: [元梦之星]
+      - ids: [689180123]
+        names: [欢乐麻将]
         contains: [欢乐麻将]
-      - names: [QQ炫舞]
+      - ids: [1219233424]
+        names: [QQ炫舞]
         contains: [QQ炫舞]
       - names: [Honor of Kings]
         contains: [Honor of Kings]
@@ -81,12 +90,22 @@ companies:
       - ids: [6711336814]
         names: [美职篮全明星]
         note: 腾讯 NBA 授权手游
+      - ids: [1180004118]
+        names: [最强美职篮]
+        note: 腾讯 NBA 授权篮球手游（原《最强NBA》）
+      - ids: [1504236603]
+        names: [荒野乱斗]
+        note: Supercell 研发、腾讯发行国服
+      - ids: [1404192329]
+        names: [完美世界]
+        note: 完美世界研发、腾讯发行国服
       - ids: [1132257692]
         names: [天龙八部手游]
         note: 畅游研发，腾讯发行
-      - ids: [1488410151]
+      - ids: [1488410151, 1287282214]
         names: [使命召唤手游]
         contains: [使命召唤]
+        note: "含国际版 Call of Duty: Mobile（TiMi 研发、动视发行）"
       - ids: [1645516720]
         names: [逆战：未来]
         note: 腾讯逆战系列手游
@@ -149,18 +168,29 @@ companies:
         contains: [荒野行动, 荒野行動]
       - names: [永劫无间]
         contains: [Naraka]
-      - names: [逆水寒]
+      - ids: [1541570980]
+        names: [逆水寒]
         core: true
         note: 手游为 2025 在线游戏收入环比增长主要来源，11 月全球发行
-      - ids: [1498874997]
+      - ids: [1498874997, 6474961936, 6474962684]
         names: [巅峰极速]
         contains: [巅峰极速, Racing Master]
-      - names: [阴阳师]
+        note: 含韩/日服独立 App（Artist 为网易海外主体）
+      - ids: [6754593077]
+        names: [无限大, "NTE: Neverness to Everness"]
+        note: 网易雷火 Naked Rain 都市开放世界新游，2027-01 全球上线
+      - ids: [895670960]
+        names: [阴阳师]
         contains: [阴阳师]
-      - names: [光·遇]
+      - ids: [1344733855]
+        names: [光·遇]
         contains: [光·遇]
-      - names: [大话西游]
+      - ids: [1015364140]
+        names: [大话西游]
         contains: [大话西游]
+      - ids: [6444670359]
+        names: [大话西游：归来]
+        note: 网易大话西游系列新作（2026）
       - ids: [6788287402]
         names: [梦幻西游：再续前缘]
         note: 梦幻西游电脑版畅玩服手机端（2026-08 上线）
@@ -218,6 +248,10 @@ companies:
       - names: [寻道大千]
         core: true
         note: 老产品焕新亮点，2025 长线运营稳住基本盘
+      - ids: [6740508579]
+        names: [英雄没有闪]
+        core: true
+        note: 三七互娱子公司安徽盈趣研发，2025 上线即爆款，曾推子公司收入环比 +5.4 倍
       - names: [灵魂序章]
         core: true
       - names: [斗罗大陆：魂师对决]
@@ -242,9 +276,10 @@ companies:
     code: "300002.SZ"
     market: A股
     games:
-      - names: [旭日之城]
+      - ids: [1376515087]
+        names: [旭日之城]
         contains: [Age of Origins]
-        note: 出海 SLG；2025 收入 28.9 亿，占游戏业务约 74%
+        note: 出海 SLG；2025 收入 28.9 亿，占游戏业务约 74%；含日服独立 App
         core: true
       - names: [战火与秩序]
         contains: [War and Order]
@@ -270,11 +305,13 @@ companies:
     code: "603444.SH"
     market: A股
     games:
-      - names: [问道]
+      - ids: [1031897589]
+        names: [问道]
         core: true
         note: 问道手游 2025 流水 19.4 亿，公司第一大产品
       - names: [一念逍遥]
-      - names: [杖剑传说]
+      - ids: [6473333072]
+        names: [杖剑传说]
         core: true
         note: 2025-05 上线，大陆版全年流水 17 亿，增长主引擎
       - names: [问剑长生]
@@ -295,7 +332,8 @@ companies:
         names: [原始征途]
         contains: [原始征途]
         core: true
-      - names: [球球大作战]
+      - ids: [996509117]
+        names: [球球大作战]
         contains: [球球大作战]
         note: 巨人网络休闲竞技
 
@@ -323,7 +361,7 @@ companies:
     code: "2400.HK"
     market: 港股
     games:
-      - ids: [6746151928]
+      - ids: [6746151928, 1561903786]
         names: [心动小镇, 두근두근타운]
         core: true
       - names: [出发吧麦芬]
@@ -339,13 +377,22 @@ companies:
     code: "9626.HK"
     market: 港股
     games:
-      - ids: [6757360957]
+      - ids: [6757360957, 6466232155]
         names: [三国：谋定天下, "삼국지: 천하결전"]
         note: 游戏业务绝对核心，2025 助力 B 站首次全年盈利；含韩国区（三国志：天下决战）
         core: true
       - names: [碧蓝航线]
         core: true
         note: 长线产品，与三谋等构成约七成游戏收入
+      - ids: [1108397779]
+        names: [命运-冠位指定]
+        note: FGO 国服，bilibili 独家代理（Artist 芜湖享游=B站游戏子公司）
+      - ids: [6475925341]
+        names: [咒术回战幻影游行, 주술회전 팬텀 퍼레이드]
+        note: B站发行韩服
+      - ids: [6479391944]
+        names: [トリッカル・もちもちほっペ大作戦]
+        note: bilibili 发行全球版（开发 Epid Games），2025-10 上线
 
   # ================= 金山软件 3888.HK（西山居）=================
   - company: 金山软件
@@ -356,9 +403,10 @@ companies:
         contains: [剑网3]
         core: true
         note: 剑侠系列为西山居业务底盘
-      - names: [新剑侠情缘]
+      - ids: [1086842482]
+        names: [新剑侠情缘]
         contains: [新剑侠情缘]
-        note: 西山居剑侠系列
+        note: 西山居剑侠系列（腾讯发行，榜单 Artist 为腾讯账号）
       - names: [尘白禁区]
         contains: [Snowbreak]
       - ids: [6740756173]
