@@ -135,6 +135,26 @@ crontab -e
 
 查看/删除：`crontab -l` / `crontab -r`。
 
+### 每周更新映射表（可选，Claude Code）
+
+想让 `data/games.yaml` 与最新榜单保持同步，可每周定时用 Claude Code 按 `data/update_game_yaml.md` 提示词自动更新。参考模板 `scripts/update_games_weekly_example.sh`（示例只负责更新与校验，提交推送等本地策略不在其中，可按需自行追加）：
+
+1. 复制为本地脚本并替换占位符：`cp scripts/update_games_weekly_example.sh scripts/update_games_weekly.sh`，按注释填写项目路径、`claude` 命令路径（如不在 PATH）
+2. 加入 crontab，每周日 23:00 运行：
+
+```bash
+crontab -e
+# 每周日 23:00：更新映射表
+0 23 * * 0 /你的项目路径/scripts/update_games_weekly.sh
+```
+
+脚本流程：`claude -p`（无头模式）读 `data/update_game_yaml.md` → 对照最新榜单快照更新 `games.yaml` → 跑完整校验（gofmt/vet/lint/test）。日志：`logs/update_games.log`，失败时脚本以非零退出码通知 cron。
+
+前置要求：
+
+- `claude` 命令可在无交互环境下认证（`claude -p "测试"` 能正常返回结果）
+- WSL2 前提同上（cron 常驻、WSL 常开）
+
 ### 原生 Linux
 
 一般发行版自带并默认启动 cron 服务，写入即可生效。

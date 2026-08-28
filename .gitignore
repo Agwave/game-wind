@@ -5,6 +5,9 @@
 # 本地配置（含企业微信 webhook 密钥，不入库）
 config.local.yaml
 
+# 本地定时任务脚本（每周映射表更新，本地策略不入库；example 模板可入库）
+scripts/update_games_weekly.sh
+
 # 运行数据（快照、报告、状态、日志）
 /data/*.json
 /data/reports/
