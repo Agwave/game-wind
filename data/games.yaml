@@ -179,9 +179,8 @@ companies:
         names: [巅峰极速]
         contains: [巅峰极速, Racing Master]
         note: 含韩/日服独立 App（Artist 为网易海外主体）
-      - ids: [6754593077]
-        names: [无限大, "NTE: Neverness to Everness"]
-        note: 网易雷火 Naked Rain 都市开放世界新游，2027-01 全球上线
+      - names: [无限大, Ananta]
+        note: 网易雷火 Naked Rain 都市开放世界新游，英文名 Ananta（曾用代号 Project Mugen），2027-01-15 全球上线，当前未上榜
       - ids: [895670960]
         names: [阴阳师]
         contains: [阴阳师]
@@ -305,7 +304,8 @@ companies:
       - names: [梦幻新诛仙]
       - names: [诛仙]
       - names: [新笑傲江湖]
-      - names: [异环]
+      - ids: [6754593077]
+        names: [异环, "NTE: Neverness to Everness"]
         note: 2026-04 全球公测，5 月贡献公司全球收入约 87%，业绩支柱
         core: true
       - ids: [6749573290]
